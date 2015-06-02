@@ -1,125 +1,163 @@
-// C++ program for implementation of Ford Fulkerson algorithm
+
 #include <iostream>
 #include <string>
 #include <vector>
 #include <queue>
+#include <list>
+#include <utility>
 using namespace std;
  
 typedef vector<int> VI;
 typedef vector<VI> MI;
 typedef vector<bool> VB;
+typedef vector<float> VF;
+typedef vector<list<pair<int,int> > > Network;
 
-// Number of vertices in given graph
-int V;
-int INT_MAX = 10e6;
- 
-/* Returns true if there is a path from source 's' to sink 't' in
-  residual graph. Also fills parent[] to store the path */
-bool bfs(MI rGraph, int s, int t, VI parent)
+void printNetwork(Network n) {
+    for (int i = 0; i < n.size(); ++i) {
+        cout << endl << "El nodo " << i << " está conectado a: " << endl;
+        for (auto it = n[i].begin(); it != n[i].end(); ++it){
+            cout << "--> nodo " << (*it).first << " con capacidad " << (*it).second << endl;
+        }
+    }
+}
+
+VF calcularProbabilidades(MI m) {
+    int personas = m.size();
+    int viajes = m[0].size();
+    VF ret(personas,0);
+    VF pViaje(viajes,0);
+    for (int i = 0; i < viajes; ++i) {
+        int pEnV = 0;
+        for (int j = 0; j < personas; ++j) {
+            if (m[j][i] != 0) ++pEnV;
+        }
+        pViaje[i] = 1.0 / pEnV;
+    }
+
+    for (int i = 0; i < personas; ++i) {
+        for (int j = 0; j < viajes; ++j) {
+            if (m[j][i] != 0) ret[i] += pViaje[j]; 
+        }
+    }
+    for (int i = 0; i < personas; ++i) cout << ret[i] << endl;
+    return ret; 
+}
+
+
+
+int main()
 {
-    // Create a visited array and mark all vertices as not visited
-    VB visited(V,false);
+    int personas, viajes;
+    cin >> personas >> viajes;
+    MI entrada(personas,VI(viajes));
+    for(int i = 0; i < personas; ++i)
+        for(int j = 0; j < viajes; ++j)
+            cin >> entrada[i][j];
+
+    bool posibleA = true;
+    bool posibleB = true;
+
+    VF probabilidades = calcularProbabilidades(entrada);
+
+    Network grafo(personas+viajes+4); 
+    // pos 0 S'
+    // pos 1 S
+    // pos n-1 T
+    // pos n T'
+
+    // Declarando S'
+     // *conexion con S
+    int sum = 0;
+    for (int i = 0; i < personas; ++i) if (int(probabilidades[i]) < probabilidades[i]) ++sum;
+    grafo[0].push_back(make_pair(1,sum));
+     // *aristas a las personas
+    for (int i = 0; i < personas; ++i) grafo[0].push_back(make_pair(i+2,int(probabilidades[i])));
+    // Declarando S
+     // *aristas a personas
+    for (int i = 0; i < personas; ++i) if (int(probabilidades[i]) != probabilidades[i]) grafo[1].push_back(make_pair(i+2,1));
+     // *arista a T'
+    sum = 0;
+    for (int i = 0; i < personas; ++i) sum += int(probabilidades[i]);
+    grafo[1].push_back(make_pair(grafo.size()-1,sum));
+    
+    // Declarando T
+    grafo[grafo.size()-2].push_back(make_pair(grafo.size()-1, viajes));
  
-    // Create a queue, enqueue source vertex and mark source vertex
-    // as visited
-    queue <int> q;
-    q.push(s);
-    visited[s] = true;
-    parent[s] = -1;
- 
-    // Standard BFS Loop
-    while (!q.empty())
-    {
-        int u = q.front();
-        q.pop();
- 
-        for (int v=0; v<V; v++)
-        {
-            if (!visited[v] && rGraph[u][v] > 0)
-            {
-                q.push(v);
-                parent[v] = u;
-                visited[v] = true;
+    // CASO A
+    // Creamos el grafo para ver si se puede cumplir todas las restricciones.
+    // Metemos solamente las aristas que pertenecen a las personas con preferencia positiva
+    // y las aristas de todas las personas a las que van a un viaje en el cual no existe ninguna preferencia positiva y les da igual
+    for (int i = 0; i < viajes; ++i) {
+        bool algun3 = false;
+        for (int j = 0; j < personas; ++j) {
+            if (entrada[j][i] == 3) {
+                if (!algun3) algun3 = true;
+                else { posibleA = false; break;} // nos lo ahorramos ya que vamos a tener que reiniciar todo para la opcion B
+                grafo[j+2].push_back(make_pair(2+personas+i,1));
+            }
+        }
+        if (!posibleA) break;
+        if (!algun3) {
+            for (int j = 0; j < personas; ++j) {
+                if (entrada[j][i] == 2) {
+                    grafo[j+2].push_back(make_pair(2+personas+i,1));
+                }
             }
         }
     }
- 
-    // If we reached sink in BFS starting from source, then return
-    // true, else false
-    return visited[t];
-}
- 
-// Returns tne maximum flow from s to t in the given graph
-int fordFulkerson(MI graph, int s, int t)
-{
-    int u, v;
- 
-    // Create a residual graph and fill the residual graph with
-    // given capacities in the original graph as residual capacities
-    // in residual graph
-    MI rGraph(V,VI(V));; // Residual graph where rGraph[i][j] indicates 
-                     // residual capacity of edge from i to j (if there
-                     // is an edge. If rGraph[i][j] is 0, then there is not)  
-    for (u = 0; u < V; u++)
-        for (v = 0; v < V; v++)
-             rGraph[u][v] = graph[u][v];
- 
-    VI parent(V);  // This array is filled by BFS and to store path
- 
-    int max_flow = 0;  // There is no flow initially
- 
-    // Augment the flow while tere is path from source to sink
-    while (bfs(rGraph, s, t, parent))
-    {
-        // Find minimum residual capacity of the edhes along the
-        // path filled by BFS. Or we can say find the maximum flow
-        // through the path found.
-        int path_flow = INT_MAX;
-        for (v=t; v!=s; v=parent[v])
-        {
-            u = parent[v];
-            path_flow = min(path_flow, rGraph[u][v]);
-        }
- 
-        // update residual capacities of the edges and reverse edges
-        // along the path
-        for (v=t; v != s; v=parent[v])
-        {
-            u = parent[v];
-            rGraph[u][v] -= path_flow;
-            rGraph[v][u] += path_flow;
-        }
- 
-        // Add path flow to overall flow
-        max_flow += path_flow;
+    
+        printNetwork(grafo);
+
+    if (posibleA) {
+        cout << "La opcion A es posible" << endl;
+        // Llamar al fulkerson para que lo resuelva
+        // if (viajes == edmons(grafo,0,grafo.size()-1)) {
+        //     cout << "La opcion A ha sido satisfecha" << endl;
+        //     return 0;
+        // }
     }
- 
-    // Return the overall flow
-    return max_flow;
-}
- 
-// Driver program to test above functions
-int main()
-{
-    // Let us create a graph shown in the above example
-    cin >> V;
 
-    MI graph(V,VI(V));
+    // CASO B
+    // Creamos el grafo para ver si se puede cumplir las restricciones negativas.
+    // Metemos las aristas que pertenecen a las personas con preferencia positivia y sin preferencia.
 
-    for(int i = 0; i < V; ++i)
-        for(int j = 0; j < V; ++j)
-            cin >> graph[i][j];
+    for (int i = 0; i < personas; ++i) grafo[i+2].clear();
+    for (int i = 0; i < viajes; ++i) {
+        bool viajeVacio = true;
+        for (int j = 0; j < personas; ++j) {
+            if (entrada[j][i] >= 2) {
+                grafo[j+2].push_back(make_pair(2+personas+i,1));
+                viajeVacio = false;
+            }
+        }
+        if (viajeVacio) posibleB = false;
+    } 
 
+        printNetwork(grafo);
 
-    /*int graph[V][V] = { {0, 16, 13, 0, 0, 0},
-                        {0, 0, 10, 12, 0, 0},
-                        {0, 4, 0, 0, 14, 0},
-                        {0, 0, 9, 0, 0, 20},
-                        {0, 0, 0, 7, 0, 4},
-                        {0, 0, 0, 0, 0, 0}
-                      };*/
- 
-    cout << "The maximum possible flow is " << fordFulkerson(graph, 0, 5) << endl;
- 
+    if (posibleB) {
+        cout << "La opcion B es posible" << endl;
+
+        // if (viajes == edmons(grafo,0,grafo.size()-1)) {
+        //     cout << "La opcion B ha sido satisfecha" << endl;
+        //     return 0;
+        // }
+    }
+
+    for (int i = 0; i < viajes; ++i) {
+        for (int j = 0; j < personas; ++j) {
+            if (entrada[j][i] == 1) grafo[j+2].push_back(make_pair(2+personas+i,1));
+        }
+    } 
+
+    // if (viajes == edmons(grafo,0,grafo.size()-1)) {
+    //     cout << "La opcion C ha sido satisfecha" << endl;
+    //     return 0;
+    // }
+    // else cout << "La opcion D es la unica posible" << endl;
+
+    printNetwork(grafo);
+
     return 0;
 }

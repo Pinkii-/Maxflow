@@ -1,7 +1,7 @@
 all: main SAP
 
 main:
-	g++ -o main main.cpp
+	g++ -std=c++11 -o main main.cpp
 
 SAP:
 	g++ -o SAP SAP.cpp

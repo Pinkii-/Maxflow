@@ -211,7 +211,7 @@ int main()
     for (int i = 0; i < personas; ++i) if (int(probabilidades[i]) < probabilidades[i]) ++sum;
     grafo[0].push_back(make_pair(1,sum));
      // *aristas a las personas
-    for (int i = 0; i < personas; ++i) grafo[0].push_back(make_pair(i+2,int(probabilidades[i])));
+    for (int i = 0; i < personas; ++i) if(int(probabilidades[i]) > 0) grafo[0].push_back(make_pair(i+2,int(probabilidades[i])));
     // Declarando S
      // *aristas a personas
     for (int i = 0; i < personas; ++i) if (int(probabilidades[i]) != probabilidades[i]) grafo[1].push_back(make_pair(i+2,1));
@@ -224,8 +224,10 @@ int main()
 
     // Declarando T
     grafo[grafo.size()-2].push_back(make_pair(grafo.size()-1, viajes)); // A T' con el número de viajes
+
     
     //grafo[grafo.size()-2].push_back(make_pair(1,INT_MAX)); // ponemos el inifinito para que siga siendo circulacion
+
  
     // CASO A
     // Creamos el grafo para ver si se puede cumplir todas las restricciones.
@@ -250,7 +252,7 @@ int main()
         }
     }
     
-        //printNetwork(grafo);
+       // printNetwork(grafo);
 
     if (posibleA) {
         cout << "La opcion A es posible" << endl;

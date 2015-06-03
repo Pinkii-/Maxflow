@@ -5,6 +5,7 @@
 #include <queue>
 #include <list>
 #include <utility>
+#include <climits>
 using namespace std;
  
 typedef vector<int> VI;
@@ -82,7 +83,8 @@ int main()
     grafo[1].push_back(make_pair(grafo.size()-1,sum));
     
     // Declarando T
-    grafo[grafo.size()-2].push_back(make_pair(grafo.size()-1, viajes));
+    grafo[grafo.size()-2].push_back(make_pair(grafo.size()-1, viajes)); // A T' con el número de viajes
+    grafo[grafo.size()-2].push_back(make_pair(1,INT_MAX)); // ponemos el inifinito para que siga siendo circulacion
  
     // CASO A
     // Creamos el grafo para ver si se puede cumplir todas las restricciones.

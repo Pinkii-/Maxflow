@@ -154,21 +154,21 @@ int edmons(const Network& G, int s, int t){
 	return maxflow;
 }
 
-int main(){
-	int n;
+// int main(){
+// 	int n;
 	
-	cin >> n;
+// 	cin >> n;
 
-	Network G(n);
+// 	Network G(n);
 
-	for(int i = 0; i < n; ++i)
-		for(int j = 0; j < n; ++j){
-			int c;
-			cin >> c;
-			if(c > 0)
-				G[i].push_back(make_pair(j,c));
-		}
+// 	for(int i = 0; i < n; ++i)
+// 		for(int j = 0; j < n; ++j){
+// 			int c;
+// 			cin >> c;
+// 			if(c > 0)
+// 				G[i].push_back(make_pair(j,c));
+// 		}
 
-	cout << "MAXFLOW = " << edmons(G,0,n-1) << endl;
+// 	cout << "MAXFLOW = " << edmons(G,0,n-1) << endl;
 
-}
+// }

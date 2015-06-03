@@ -1,0 +1,103 @@
+
+El nodo 0 está conectado a: 
+--> nodo 1 con capacidad 16
+--> nodo 2 con capacidad 13
+
+El nodo 1 está conectado a: 
+--> nodo 2 con capacidad 10
+--> nodo 3 con capacidad 12
+
+El nodo 2 está conectado a: 
+--> nodo 1 con capacidad 4
+--> nodo 4 con capacidad 14
+
+El nodo 3 está conectado a: 
+--> nodo 2 con capacidad 9
+--> nodo 5 con capacidad 20
+
+El nodo 4 está conectado a: 
+--> nodo 3 con capacidad 7
+--> nodo 5 con capacidad 4
+
+El nodo 5 está conectado a: 
+-1 0 0 1 2 3 
+C(5-3) = 20
+C(3-1) = 12
+C(1-0) = 16
+12
+
+El nodo 0 está conectado a: 
+--> nodo 1 con capacidad 4
+--> nodo 2 con capacidad 13
+
+El nodo 1 está conectado a: 
+--> nodo 0 con capacidad 12
+--> nodo 2 con capacidad 10
+--> nodo 3 con capacidad 0
+--> nodo 2 con capacidad 0
+
+El nodo 2 está conectado a: 
+--> nodo 0 con capacidad 0
+--> nodo 1 con capacidad 0
+--> nodo 1 con capacidad 4
+--> nodo 4 con capacidad 14
+--> nodo 3 con capacidad 0
+
+El nodo 3 está conectado a: 
+--> nodo 1 con capacidad 12
+--> nodo 2 con capacidad 9
+--> nodo 5 con capacidad 8
+--> nodo 4 con capacidad 0
+
+El nodo 4 está conectado a: 
+--> nodo 2 con capacidad 0
+--> nodo 3 con capacidad 7
+--> nodo 5 con capacidad 4
+
+El nodo 5 está conectado a: 
+--> nodo 3 con capacidad 12
+--> nodo 4 con capacidad 0
+-1 0 0 4 2 4 
+C(5-4) = 4
+C(4-2) = 14
+C(2-0) = 13
+16
+
+El nodo 0 está conectado a: 
+--> nodo 1 con capacidad 4
+--> nodo 2 con capacidad 9
+
+El nodo 1 está conectado a: 
+--> nodo 0 con capacidad 12
+--> nodo 2 con capacidad 10
+--> nodo 3 con capacidad 0
+--> nodo 2 con capacidad 0
+
+El nodo 2 está conectado a: 
+--> nodo 0 con capacidad 4
+--> nodo 1 con capacidad 0
+--> nodo 1 con capacidad 4
+--> nodo 4 con capacidad 10
+--> nodo 3 con capacidad 0
+
+El nodo 3 está conectado a: 
+--> nodo 1 con capacidad 12
+--> nodo 2 con capacidad 9
+--> nodo 5 con capacidad 8
+--> nodo 4 con capacidad 0
+
+El nodo 4 está conectado a: 
+--> nodo 2 con capacidad 4
+--> nodo 3 con capacidad 7
+--> nodo 5 con capacidad 0
+
+El nodo 5 está conectado a: 
+--> nodo 3 con capacidad 12
+--> nodo 4 con capacidad 4
+-1 0 0 4 2 3 
+C(5-3) = 8
+C(3-4) = 7
+C(4-2) = 10
+C(2-0) = 9
+23
+MAXFLOW = 506896848

@@ -1,0 +1,106 @@
+0.833333
+1.33333
+0.833333
+
+El nodo 0 está conectado a: 
+--> nodo 1 con capacidad 3
+--> nodo 2 con capacidad 0
+--> nodo 3 con capacidad 1
+--> nodo 4 con capacidad 0
+
+El nodo 1 está conectado a: 
+--> nodo 2 con capacidad 1
+--> nodo 3 con capacidad 1
+--> nodo 4 con capacidad 1
+--> nodo 9 con capacidad 1
+
+El nodo 2 está conectado a: 
+--> nodo 7 con capacidad 1
+
+El nodo 3 está conectado a: 
+--> nodo 6 con capacidad 1
+
+El nodo 4 está conectado a: 
+--> nodo 5 con capacidad 1
+
+El nodo 5 está conectado a: 
+
+El nodo 6 está conectado a: 
+
+El nodo 7 está conectado a: 
+
+El nodo 8 está conectado a: 
+--> nodo 9 con capacidad 3
+
+El nodo 9 está conectado a: 
+La opcion A es posible
+
+El nodo 0 está conectado a: 
+--> nodo 1 con capacidad 3
+--> nodo 2 con capacidad 0
+--> nodo 3 con capacidad 1
+--> nodo 4 con capacidad 0
+
+El nodo 1 está conectado a: 
+--> nodo 2 con capacidad 1
+--> nodo 3 con capacidad 1
+--> nodo 4 con capacidad 1
+--> nodo 9 con capacidad 1
+
+El nodo 2 está conectado a: 
+--> nodo 7 con capacidad 1
+
+El nodo 3 está conectado a: 
+--> nodo 6 con capacidad 1
+--> nodo 7 con capacidad 1
+
+El nodo 4 está conectado a: 
+--> nodo 5 con capacidad 1
+
+El nodo 5 está conectado a: 
+
+El nodo 6 está conectado a: 
+
+El nodo 7 está conectado a: 
+
+El nodo 8 está conectado a: 
+--> nodo 9 con capacidad 3
+
+El nodo 9 está conectado a: 
+La opcion B es posible
+
+El nodo 0 está conectado a: 
+--> nodo 1 con capacidad 3
+--> nodo 2 con capacidad 0
+--> nodo 3 con capacidad 1
+--> nodo 4 con capacidad 0
+
+El nodo 1 está conectado a: 
+--> nodo 2 con capacidad 1
+--> nodo 3 con capacidad 1
+--> nodo 4 con capacidad 1
+--> nodo 9 con capacidad 1
+
+El nodo 2 está conectado a: 
+--> nodo 7 con capacidad 1
+--> nodo 6 con capacidad 1
+
+El nodo 3 está conectado a: 
+--> nodo 6 con capacidad 1
+--> nodo 7 con capacidad 1
+--> nodo 5 con capacidad 1
+
+El nodo 4 está conectado a: 
+--> nodo 5 con capacidad 1
+--> nodo 6 con capacidad 1
+
+El nodo 5 está conectado a: 
+
+El nodo 6 está conectado a: 
+
+El nodo 7 está conectado a: 
+
+El nodo 8 está conectado a: 
+--> nodo 9 con capacidad 3
+
+El nodo 9 está conectado a: 

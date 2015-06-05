@@ -1,5 +1,6 @@
 
 #include "edmon2.hpp"
+#include "preflow.hpp"
 using namespace std;
 
 int personas, viajes;
@@ -279,7 +280,7 @@ int main()
         }
     }
     
-        printNetwork(grafo);
+        //printNetwork(grafo);
 
     Network F;
     MI f;
@@ -288,12 +289,19 @@ int main()
         cout << "La opcion A es posible" << endl;
         // Llamar al fulkerson para que lo resuelva
         int ed =  edmons2(grafo,f,0,grafo.size()-1);
+        int pfp = preflowpush(grafo,f,0,grafo.size()-1);
         if (resultado == ed) {
-            cout << "La opcion A ha sido satisfecha " << ed << endl;
+            cout << "EK: La opcion A ha sido satisfecha " << ed << endl;
+            printFlow(f);
+            //return 0;
+        }
+        else cout << "EK: ola k ase AAA " << ed << endl;
+        if (resultado == pfp) {
+            cout << "PFP: La opcion A ha sido satisfecha " << ed << endl;
             printFlow(f);
             return 0;
         }
-        else cout << "ola k ase AAA " << ed << endl;
+        else cout << "PFP: ola k ase AAA " << ed << endl;
     }
 
     // CASO B
@@ -318,12 +326,20 @@ int main()
         cout << "La opcion B es posible" << endl;
 
         int ed =  edmons2(grafo,f,0,grafo.size()-1);
+        int pfp =  preflowpush(grafo,f,0,grafo.size()-1);
         if (resultado == ed) {
-            cout << "La opcion B ha sido satisfecha " << ed << endl;
+            cout << "EK: La opcion B ha sido satisfecha " << ed << endl;
+            printFlow(f);
+            //return 0;
+        }
+        else cout << "EK: ola k ase " << ed << endl;
+
+        if (resultado == pfp) {
+            cout << "PFP: La opcion B ha sido satisfecha " << ed << endl;
             printFlow(f);
             return 0;
         }
-        else cout << "ola k ase " << ed << endl;
+        else cout << "PFP: ola k ase " << ed << endl;
 
     }
 
@@ -334,12 +350,21 @@ int main()
     } 
 
     int ed = edmons2(grafo,f,0,grafo.size()-1);
+    int pfp = preflowpush(grafo,f,0,grafo.size()-1);
+
     if (ed == resultado) {
-        cout << "La opcion C ha sido satisfecha " << ed << endl;
+        cout << "EK: La opcion C ha sido satisfecha " << ed << endl;
         printFlow(f);
-        return 0;
+        // return 0;
     }
-    else cout << "La opcion D es la unica posible " << ed << endl;
+    else cout << "EK: La opcion D es la unica posible " << ed << endl;
+
+    if (pfp == resultado) {
+        cout << "PFP: La opcion C ha sido satisfecha " << ed << endl;
+        printFlow(f);
+         return 0;
+    }
+    else cout << "PFP: La opcion D es la unica posible " << ed << endl;
 
     //printNetwork(grafo);
 

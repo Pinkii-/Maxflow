@@ -1,7 +1,20 @@
 #include "utils.hpp"
 
+extern int personas, viajes; 
 
 using namespace std;
+
+void pF(MI n) {
+    cout << "Solucion:" << endl;
+    for (int i = 0; i < viajes; ++i) {
+        for (int j = 0; j < personas; ++j) {
+            if (n[j+2][i+personas+2] != 0) cout << j << " ";
+        }
+    }
+    cout << endl;
+}
+
+
 
 int bfs2(Network G, MI F, int s, int t, VI& path) {
     path = VI(G.size(),-1);
@@ -39,6 +52,8 @@ int edmons2(const Network& G, MI& F, int s, int t) {
             F[u][v] += m;
             F[v][u] -= m;
             v = u;
+            //cout << "Maxflow hasta ahora " << maxflow << endl;
+            //pF(F);
         }
     }
     return maxflow;

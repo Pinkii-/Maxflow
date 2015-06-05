@@ -226,41 +226,42 @@ int main()
     Network grafo(personas+viajes+4); 
     int S = 0;// S'
     int s = 1;// S
-    int t = grafo.size()-2;// T
-    int T = grafo.size()-1;// T'
+    int t = grafo.size()-1;// T
 
     // Declarando S'
-     // *conexion con S
-    //int sumDif = 0;
-    ////for (int i = 0; i < personas; ++i) if (int(probabilidades[i]) < probabilidades[i]) ++sumDif;
-    //if (sumDif) grafo[S].push_back(make_pair(s,sumDif));
-    grafo[S].push_back(make_pair(s,viajes));
+       // *conexion con S
+      int sumDif = 0;
+      for (int i = 0; i < personas; ++i) if (int(probabilidades[i]) < probabilidades[i]) ++sumDif;
+      if (sumDif) grafo[S].push_back(make_pair(s,sumDif));
+    // grafo[S].push_back(make_pair(s,viajes));
      // *aristas a las personas
     for (int i = 0; i < personas; ++i) if(int(probabilidades[i]) > 0) grafo[S].push_back(make_pair(i+2,int(probabilidades[i])));
     // Declarando S
      // *aristas a personas
     for (int i = 0; i < personas; ++i) if (int(probabilidades[i]) != probabilidades[i]) grafo[s].push_back(make_pair(i+2,1));
      // *arista a T'
-    int sumLower = 0;
-    for (int i = 0; i < personas; ++i) sumLower += int(probabilidades[i]);
-    if (sumLower) grafo[s].push_back(make_pair(T,sumLower));
+    //int sumLower = 0;
+    //for (int i = 0; i < personas; ++i) sumLower += int(probabilidades[i]);
+    //if (sumLower) grafo[s].push_back(make_pair(T,sumLower));
     
     // Declarando todos los viajes
-    for (int i = personas + 2; i <  grafo.size() - 2; ++i) grafo[i].push_back(make_pair(t,1));
+    for (int i = 0; i < viajes; ++i) grafo[i+personas+2].push_back(make_pair(t,1));
 
     // Declarando T
-    grafo[t].push_back(make_pair(T, viajes)); // A T' con el número de viajes
-    grafo[t].push_back(make_pair(s,INT_MAX)); // ponemos el inifinito para que siga siendo circulacion
+    //grafo[t].push_back(make_pair(T, viajes)); // A T' con el número de viajes
+    //grafo[t].push_back(make_pair(s,INT_MAX)); // ponemos el inifinito para que siga siendo circulacion
 
-     int resultado = sumLower + viajes;
+    // int resultado = sumLower + viajes;
     // int resultado = sumLower;
-    // int resultado = viajes;
+    int resultado = viajes;
     // int resultado = sumDif + sumLower;
  
     // CASO A
     // Creamos el grafo para ver si se puede cumplir todas las restricciones.
     // Metemos solamente las aristas que pertenecen a las personas con preferencia positiva
     // y las aristas de todas las personas a las que van a un viaje en el cual no existe ninguna preferencia positiva y les da igual
+    
+    
     for (int i = 0; i < viajes; ++i) {
         bool algun3 = false;
         for (int j = 0; j < personas; ++j) {
@@ -280,8 +281,9 @@ int main()
         }
     }
     
-        //printNetwork(grafo);
+    printNetwork(grafo);
 
+        
     Network F;
     MI f;
 
@@ -289,13 +291,13 @@ int main()
         cout << "La opcion A es posible" << endl;
         // Llamar al fulkerson para que lo resuelva
         int ed =  edmons2(grafo,f,0,grafo.size()-1);
-        int pfp = preflowpush(grafo,f,0,grafo.size()-1);
         if (resultado == ed) {
             cout << "EK: La opcion A ha sido satisfecha " << ed << endl;
             printFlow(f);
             //return 0;
         }
         else cout << "EK: ola k ase AAA " << ed << endl;
+        int pfp = preflowpush(grafo,f,0,grafo.size()-1);
         if (resultado == pfp) {
             cout << "PFP: La opcion A ha sido satisfecha " << ed << endl;
             printFlow(f);
@@ -326,13 +328,13 @@ int main()
         cout << "La opcion B es posible" << endl;
 
         int ed =  edmons2(grafo,f,0,grafo.size()-1);
-        int pfp =  preflowpush(grafo,f,0,grafo.size()-1);
         if (resultado == ed) {
             cout << "EK: La opcion B ha sido satisfecha " << ed << endl;
             printFlow(f);
             //return 0;
         }
         else cout << "EK: ola k ase " << ed << endl;
+        int pfp =  preflowpush(grafo,f,0,grafo.size()-1);
 
         if (resultado == pfp) {
             cout << "PFP: La opcion B ha sido satisfecha " << ed << endl;
@@ -350,7 +352,6 @@ int main()
     } 
 
     int ed = edmons2(grafo,f,0,grafo.size()-1);
-    int pfp = preflowpush(grafo,f,0,grafo.size()-1);
 
     if (ed == resultado) {
         cout << "EK: La opcion C ha sido satisfecha " << ed << endl;
@@ -358,7 +359,7 @@ int main()
         // return 0;
     }
     else cout << "EK: La opcion D es la unica posible " << ed << endl;
-
+    int pfp = preflowpush(grafo,f,0,grafo.size()-1);
     if (pfp == resultado) {
         cout << "PFP: La opcion C ha sido satisfecha " << ed << endl;
         printFlow(f);

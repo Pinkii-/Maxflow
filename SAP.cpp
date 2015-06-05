@@ -3,11 +3,14 @@
 #include <queue>
 #include <list>
 #include <utility>
+
+#include <climits>
 using namespace std;
 
 typedef vector<int> VI;
 typedef vector<bool> VB;
 typedef vector<list<pair<int,int> > > Network;
+typedef vector<VI> MI;
 
 void printNetwork(Network n) {
     for (int i = 0; i < n.size(); ++i) {
@@ -154,21 +157,64 @@ int edmons(const Network& G, int s, int t){
 	return maxflow;
 }
 
-// int main(){
-// 	int n;
+
+
+int bfs2(Network G, MI F, int s, int t, VI& path) {
+    path = VI(G.size(),-1);
+    path[s] = -2;
+    VI m(G.size());
+    m[s] = INT_MAX;
+    queue<int> Q;
+    Q.push(s);
+    while (!Q.empty()) {
+        int u = Q.front(); Q.pop();
+        for (auto it = G[u].begin(); it != G[u].end(); ++it) {
+            int v = (*it).first;
+            if ((*it).second - F[u][v] > 0 && path[v] == -1) {
+                path[v] = u;
+                m[v] = min(m[u], (*it).second - F[u][v]);
+                if (v == t) return m[t];
+                Q.push(v);
+            }
+        }
+    }
+    return 0;
+}
+
+int edmons2(const Network& G, MI& F, int s, int t) {
+    int maxflow = 0;
+    F = MI(G.size(), VI(G.size(),0));
+    while(true) {
+        VI path(G.size());
+        int m = bfs2(G,F,s,t,path);
+        if (m == 0) break;
+        maxflow += m;
+        int v = t;
+        while (v != s) {
+            int u = path[v];
+            F[u][v] += m;
+            F[v][u] -= m;
+            v = u;
+        }
+    }
+    return maxflow;
+}
+int main(){
+	int n;
 	
-// 	cin >> n;
+	cin >> n;
 
-// 	Network G(n);
+	Network G(n);
 
-// 	for(int i = 0; i < n; ++i)
-// 		for(int j = 0; j < n; ++j){
-// 			int c;
-// 			cin >> c;
-// 			if(c > 0)
-// 				G[i].push_back(make_pair(j,c));
-// 		}
+	for(int i = 0; i < n; ++i)
+		for(int j = 0; j < n; ++j){
+			int c;
+			cin >> c;
+			if(c > 0)
+				G[i].push_back(make_pair(j,c));
+		}
 
-// 	cout << "MAXFLOW = " << edmons(G,0,n-1) << endl;
+	MI f;
+	cout << "MAXFLOW = " << edmons2(G,f,0,n-1) << endl;
 
-// }
+}

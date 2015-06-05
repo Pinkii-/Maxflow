@@ -1,18 +1,8 @@
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <queue>
-#include <list>
-#include <utility>
-#include <climits>
+#include "edmon2.hpp"
 using namespace std;
- 
-typedef vector<int> VI;
-typedef vector<VI> MI;
-typedef vector<bool> VB;
-typedef vector<float> VF;
-typedef vector<list<pair<int,int> > > Network;
+
+int personas, viajes;
 
 void printNetwork(Network n) {
     for (int i = 0; i < n.size(); ++i) {
@@ -21,6 +11,37 @@ void printNetwork(Network n) {
             cout << "--> nodo " << (*it).first << " con capacidad " << (*it).second << endl;
         }
     }
+}
+
+void printFlow(Network n) {
+    vector<int> solucion(viajes,-1);
+    for (int i = 0; i < personas; ++i) {
+        //cout << "Estoy en la persona " << i << endl;
+        for (auto it = n[i+2].begin(); it != n[i+2].end(); ++it) {
+            if ((*it).second != 0) {
+                // cout << (*it).first - personas - 2 << " " << (*it).second << " ";
+                if (solucion[(*it).first - personas - 2] == -1) solucion[(*it).first - personas - 2] = i;
+                //else cout << "BROKEN" << endl;
+            }
+                
+        }
+        // cout << endl;
+    }
+    // cout << endl;
+
+    cout << "Solucion: " << endl;
+    for (int n : solucion) cout << n << " ";
+    cout << endl;
+}
+
+void printFlow(MI n) {
+    cout << "Solucion:" << endl;
+    for (int i = 0; i < viajes; ++i) {
+        for (int j = 0; j < personas; ++j) {
+            if (n[j+2][i+personas+2] != 0) cout << j << " ";
+        }
+    }
+    cout << endl;
 }
 
 void updateResidual(Network& rG, const Network& G, const Network& F){
@@ -43,11 +64,12 @@ void updateResidual(Network& rG, const Network& G, const Network& F){
             
         }
     }
+    printFlow(F);
 }
 
 int augment(const Network& rG, Network& F, const VI& path){
     int u = path.size() - 1;
-    int min = 10e6;
+    int min = INT_MAX;
 
     while(u != 0){
         int v = path[u];
@@ -115,8 +137,8 @@ bool bfs(const Network& rG, int s, int t, VI& path){
     path = VI(rG.size(),-1);
     VB visited(rG.size(),false);
 
-    visited[0] = true;
-    Q.push(0);
+    visited[s] = true;
+    Q.push(s);
 
     while(!Q.empty()){
         int u = Q.front();
@@ -128,7 +150,7 @@ bool bfs(const Network& rG, int s, int t, VI& path){
                 visited[v] = true;
                 path[v] = u;
                 Q.push(v);
-                if(v == rG.size() - 1) return true;
+                if(v == t) return true;
             }
         }
     }
@@ -137,8 +159,8 @@ bool bfs(const Network& rG, int s, int t, VI& path){
 
 }
 
-int edmons(const Network& G, int s, int t){
-    Network F(G.size());
+int edmons(const Network& G, Network& F, int s, int t){
+    F = Network(G.size());
 
     for(int u = 0; u < F.size(); ++u)
         for(auto it = G[u].begin(); it != G[u].end(); ++it){
@@ -169,7 +191,8 @@ VF calcularProbabilidades(MI m) {
         for (int j = 0; j < personas; ++j) {
             if (m[j][i] != 0) ++pEnV;
         }
-        pViaje[i] = 1.0 / pEnV;
+        if (pEnV) pViaje[i] = 1.0 / pEnV;
+        else pViaje[i] = 0;
     }
 
     for (int i = 0; i < personas; ++i) {
@@ -185,7 +208,7 @@ VF calcularProbabilidades(MI m) {
 
 int main()
 {
-    int personas, viajes;
+
     cin >> personas >> viajes;
     MI entrada(personas,VI(viajes));
     for(int i = 0; i < personas; ++i)
@@ -200,34 +223,38 @@ int main()
 
 
     Network grafo(personas+viajes+4); 
-    // pos 0 S'
-    // pos 1 S
-    // pos n-2 T
-    // pos n-1 T'
+    int S = 0;// S'
+    int s = 1;// S
+    int t = grafo.size()-2;// T
+    int T = grafo.size()-1;// T'
 
     // Declarando S'
      // *conexion con S
-    int sum = 0;
-    for (int i = 0; i < personas; ++i) if (int(probabilidades[i]) < probabilidades[i]) ++sum;
-    grafo[0].push_back(make_pair(1,sum));
+    //int sumDif = 0;
+    ////for (int i = 0; i < personas; ++i) if (int(probabilidades[i]) < probabilidades[i]) ++sumDif;
+    //if (sumDif) grafo[S].push_back(make_pair(s,sumDif));
+    grafo[S].push_back(make_pair(s,viajes));
      // *aristas a las personas
-    for (int i = 0; i < personas; ++i) if(int(probabilidades[i]) > 0) grafo[0].push_back(make_pair(i+2,int(probabilidades[i])));
+    for (int i = 0; i < personas; ++i) if(int(probabilidades[i]) > 0) grafo[S].push_back(make_pair(i+2,int(probabilidades[i])));
     // Declarando S
      // *aristas a personas
-    for (int i = 0; i < personas; ++i) if (int(probabilidades[i]) != probabilidades[i]) grafo[1].push_back(make_pair(i+2,1));
+    for (int i = 0; i < personas; ++i) if (int(probabilidades[i]) != probabilidades[i]) grafo[s].push_back(make_pair(i+2,1));
      // *arista a T'
-    sum = 0;
-    for (int i = 0; i < personas; ++i) sum += int(probabilidades[i]);
-    //grafo[1].push_back(make_pair(grafo.size()-1,sum));
+    int sumLower = 0;
+    for (int i = 0; i < personas; ++i) sumLower += int(probabilidades[i]);
+    if (sumLower) grafo[s].push_back(make_pair(T,sumLower));
     
-    for (int i = personas + 2; i <  grafo.size() - 2; ++i) grafo[i].push_back(make_pair(grafo.size()-2,1));
+    // Declarando todos los viajes
+    for (int i = personas + 2; i <  grafo.size() - 2; ++i) grafo[i].push_back(make_pair(t,1));
 
     // Declarando T
-    grafo[grafo.size()-2].push_back(make_pair(grafo.size()-1, viajes)); // A T' con el número de viajes
+    grafo[t].push_back(make_pair(T, viajes)); // A T' con el número de viajes
+    grafo[t].push_back(make_pair(s,INT_MAX)); // ponemos el inifinito para que siga siendo circulacion
 
-    
-    //grafo[grafo.size()-2].push_back(make_pair(1,INT_MAX)); // ponemos el inifinito para que siga siendo circulacion
-
+     int resultado = sumLower + viajes;
+    // int resultado = sumLower;
+    // int resultado = viajes;
+    // int resultado = sumDif + sumLower;
  
     // CASO A
     // Creamos el grafo para ver si se puede cumplir todas las restricciones.
@@ -252,14 +279,18 @@ int main()
         }
     }
     
-       // printNetwork(grafo);
+        printNetwork(grafo);
+
+    Network F;
+    MI f;
 
     if (posibleA) {
         cout << "La opcion A es posible" << endl;
         // Llamar al fulkerson para que lo resuelva
-        int ed =  edmons(grafo,0,grafo.size()-1);
-        if (viajes == ed) {
-            cout << "La opcion A ha sido satisfecha" << endl;
+        int ed =  edmons2(grafo,f,0,grafo.size()-1);
+        if (resultado == ed) {
+            cout << "La opcion A ha sido satisfecha " << ed << endl;
+            printFlow(f);
             return 0;
         }
         else cout << "ola k ase AAA " << ed << endl;
@@ -286,9 +317,10 @@ int main()
     if (posibleB) {
         cout << "La opcion B es posible" << endl;
 
-        int ed =  edmons(grafo,0,grafo.size()-1);
-        if (viajes == ed) {
-            cout << "La opcion B ha sido satisfecha" << endl;
+        int ed =  edmons2(grafo,f,0,grafo.size()-1);
+        if (resultado == ed) {
+            cout << "La opcion B ha sido satisfecha " << ed << endl;
+            printFlow(f);
             return 0;
         }
         else cout << "ola k ase " << ed << endl;
@@ -301,11 +333,13 @@ int main()
         }
     } 
 
-    if (viajes == edmons(grafo,0,grafo.size()-1)) {
-        cout << "La opcion C ha sido satisfecha" << endl;
+    int ed = edmons2(grafo,f,0,grafo.size()-1);
+    if (ed == resultado) {
+        cout << "La opcion C ha sido satisfecha " << ed << endl;
+        printFlow(f);
         return 0;
     }
-    else cout << "La opcion D es la unica posible" << endl;
+    else cout << "La opcion D es la unica posible " << ed << endl;
 
     //printNetwork(grafo);
 

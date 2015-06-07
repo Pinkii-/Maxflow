@@ -16,7 +16,7 @@ void pF(MI n) {
 
 
 
-int bfs2(Network G, MI F, int s, int t, VI& path) {
+int bfs2(const Network& G, const MI& F, int s, int t, VI& path) {
     path = VI(G.size(),-1);
     path[s] = -2;
     VI m(G.size());

@@ -65,7 +65,7 @@ void updateResidual(Network& rG, const Network& G, const Network& F){
             
         }
     }
-    printFlow(F);
+    //printFlow(F);
 }
 
 int augment(const Network& rG, Network& F, const VI& path){
@@ -233,16 +233,16 @@ int main()
       int sumDif = 0;
       for (int i = 0; i < personas; ++i) if (int(probabilidades[i]) < probabilidades[i]) ++sumDif;
       if (sumDif) grafo[S].push_back(make_pair(s,sumDif));
-    // grafo[S].push_back(make_pair(s,viajes));
+    //grafo[S].push_back(make_pair(s,viajes));
      // *aristas a las personas
     for (int i = 0; i < personas; ++i) if(int(probabilidades[i]) > 0) grafo[S].push_back(make_pair(i+2,int(probabilidades[i])));
     // Declarando S
      // *aristas a personas
     for (int i = 0; i < personas; ++i) if (int(probabilidades[i]) != probabilidades[i]) grafo[s].push_back(make_pair(i+2,1));
      // *arista a T'
-    //int sumLower = 0;
-    //for (int i = 0; i < personas; ++i) sumLower += int(probabilidades[i]);
-    //if (sumLower) grafo[s].push_back(make_pair(T,sumLower));
+    int sumLower = 0;
+    for (int i = 0; i < personas; ++i) sumLower += int(probabilidades[i]);
+    //if (sumLower) grafo[s].push_back(make_pair(t,sumLower));
     
     // Declarando todos los viajes
     for (int i = 0; i < viajes; ++i) grafo[i+personas+2].push_back(make_pair(t,1));
@@ -251,9 +251,11 @@ int main()
     //grafo[t].push_back(make_pair(T, viajes)); // A T' con el número de viajes
     //grafo[t].push_back(make_pair(s,INT_MAX)); // ponemos el inifinito para que siga siendo circulacion
 
-    // int resultado = sumLower + viajes;
+    //int resultado = sumLower + viajes;
     // int resultado = sumLower;
+    
     int resultado = viajes;
+    
     // int resultado = sumDif + sumLower;
  
     // CASO A
@@ -281,7 +283,7 @@ int main()
         }
     }
     
-    printNetwork(grafo);
+    // printNetwork(grafo);
 
         
     Network F;

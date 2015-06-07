@@ -1,6 +1,19 @@
 #include "utils.hpp"
 
 using namespace std;
+
+void prF(MI n) {
+    cout << "Solucion preflowpush:" << endl;
+    for (int i = 0; i < viajes; ++i) {
+        cout << "viaje " << i << ": ";
+        for (int j = 0; j < personas; ++j) {
+            if (n[j+2][i+personas+2] != 0) cout << j << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
  
 void push(const Network& C, MI& F, VI& excess, int u, int v) {
 	int cuv = 0;
@@ -14,6 +27,8 @@ void push(const Network& C, MI& F, VI& excess, int u, int v) {
   F[v][u] -= send;
   excess[u] -= send;
   excess[v] += send;
+
+   prF(F);
 }
 
 void relabel(const Network& C, const MI& F, VI& height, int u) {
@@ -21,10 +36,10 @@ void relabel(const Network& C, const MI& F, VI& height, int u) {
   for (int v = 0; v < C.size(); v++) {
   	int cuv = 0;
   	for(auto it = C[u].begin(); it != C[u].end(); ++it)
-		if((*it).first == v) {
-			cuv = (*it).second;
-			break;
-		}
+		  if((*it).first == v) {
+			 cuv = (*it).second;
+			 break;
+		  }
     if (cuv - F[u][v] > 0) {
       min_height = min(min_height, height[v]);
       height[u] = min_height + 1;
@@ -38,15 +53,15 @@ void discharge(const Network& C, MI& F, VI& excess, VI& height, VI& seen, int u)
       int v = seen[u];
       int cuv = 0;
       for(auto it = C[u].begin(); it != C[u].end(); ++it)
-		if((*it).first == v) {
-			cuv = (*it).second;
-			break;
-		}
+		    if((*it).first == v) {
+			   cuv = (*it).second;
+			   break;
+		    }
       if ((cuv - F[u][v] > 0) && (height[u] > height[v])){
-    push(C, F, excess, u, v);
+      push(C, F, excess, u, v);
       }
       else
-    seen[u] += 1;
+        seen[u] += 1;
     } else {
       relabel(C, F, height, u);
       seen[u] = 0;
@@ -65,18 +80,19 @@ void moveToFront(int i, VI& A) {
  
 int preflowpush(const Network& C, MI& F, int source, int sink) {
   VI excess, height, list, seen;
+  F = MI(C.size(),VI(C.size(),0));
  
   excess = VI(C.size());
   height = VI(C.size());
   seen = VI(C.size());
   
-  for(int i = 1; i < C.size()-1; ++i)
-  	list.push_back(i);
+  for(int i = 0; i < C.size(); ++i)
+  	if (i != source && i != sink) list.push_back(i);
  
   height[source] = C.size();
   excess[source] = INT_MAX;
 
-  for (int i = 0; i < C.size(); i++)
+  for (int i = 0; i < C.size(); ++i)
     push(C, F, excess, source, i);
  
   int p = 0;
@@ -92,7 +108,7 @@ int preflowpush(const Network& C, MI& F, int source, int sink) {
       p += 1;
   }
   int maxflow = 0;
-  for (int i = 0; i < C.size(); i++)
+  for (int i = 0; i < C.size(); ++i)
     maxflow += F[source][i];
  
   return maxflow;

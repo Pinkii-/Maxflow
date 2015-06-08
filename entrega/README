@@ -1,0 +1,21 @@
+Para compilar ejecutar el Makefile.
+$ make clean; make
+
+Hay tres programas principales: main, mainEK, mainPFP.
+
+Main utiliza ambos algoritmos y nos devuelve la solución en formato:
+	[A,B,C,D]
+	[Lista de asignaciones de personas a viajes]
+
+MainEK y MainPFP utilizan Edmonds-Karp y Preflow Push respectivamente.
+La salida consiste en únicamente una línea con:
+	[A,B,C,D]
+
+Adjuntamos el script utilizado para obtener los ficheros de resultados.
+Para ejecutarlo:
+$ ./script.sh
+
+El script ejecuta mainEK y mainPFP para todos los casos de la carpeta benchmark/
+y escribe los resultados en los ficheros EK.out y PFP.out
+
+En la carpeta out/ se encuentran los ficheros EK.out y PFP.out que hemos generado nosotros.

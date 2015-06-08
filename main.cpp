@@ -1,5 +1,5 @@
 
-#include "edmon2.hpp"
+#include "edmonds.hpp"
 #include "preflow.hpp"
 using namespace std;
 
@@ -292,13 +292,13 @@ int main()
     if (posibleA) {
         cout << "La opcion A es posible" << endl;
         // Llamar al fulkerson para que lo resuelva
-        int ed =  edmons2(grafo,f,0,grafo.size()-1);
+        int ed =  edmonds(grafo,f,0,grafo.size()-1);
         if (resultado == ed) {
             cout << "EK: La opcion A ha sido satisfecha " << ed << endl;
             printFlow(f);
         }
         else cout << "EK: ola k ase AAA " << ed << endl;
-        int pfp = preflowpush2(grafo,f,0,grafo.size()-1);
+        int pfp = preflowpush(grafo,f,0,grafo.size()-1);
         if (resultado == pfp) {
             cout << "PFP: La opcion A ha sido satisfecha " << pfp << endl;
             printFlow(f);
@@ -328,14 +328,14 @@ int main()
     if (posibleB) {
         cout << "La opcion B es posible" << endl;
 
-        int ed =  edmons2(grafo,f,0,grafo.size()-1);
+        int ed =  edmonds(grafo,f,0,grafo.size()-1);
         if (resultado == ed) {
             cout << "EK: La opcion B ha sido satisfecha " << ed << endl;
             printFlow(f);
             //return 0;
         }
         else cout << "EK: ola k ase BBB" << ed << endl;
-        int pfp =  preflowpush2(grafo,f,0,grafo.size()-1);
+        int pfp =  preflowpush(grafo,f,0,grafo.size()-1);
 
         if (resultado == pfp) {
             cout << "PFP: La opcion B ha sido satisfecha " << pfp << endl;
@@ -352,7 +352,7 @@ int main()
         }
     } 
 
-    int ed = edmons2(grafo,f,0,grafo.size()-1);
+    int ed = edmonds(grafo,f,0,grafo.size()-1);
 
     if (ed == resultado) {
         cout << "EK: La opcion C ha sido satisfecha " << ed << endl;
@@ -360,7 +360,7 @@ int main()
         // return 0;
     }
     else cout << "EK: La opcion D es la unica posible " << ed << endl;
-    int pfp = preflowpush2(grafo,f,0,grafo.size()-1);
+    int pfp = preflowpush(grafo,f,0,grafo.size()-1);
     if (pfp == resultado) {
         cout << "PFP: La opcion C ha sido satisfecha " << pfp << endl;
         printFlow(f);

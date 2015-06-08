@@ -16,7 +16,7 @@ void pF(MI n) {
 
 
 
-int bfs2(const Network& G, const MI& F, int s, int t, VI& path) {
+int bfs(const Network& G, const MI& F, int s, int t, VI& path) {
     path = VI(G.size(),-1);
     path[s] = -2;
     VI m(G.size());
@@ -38,12 +38,12 @@ int bfs2(const Network& G, const MI& F, int s, int t, VI& path) {
     return 0;
 }
 
-int edmons2(const Network& G, MI& F, int s, int t) {
+int edmonds(const Network& G, MI& F, int s, int t) {
     int maxflow = 0;
     F = MI(G.size(), VI(G.size(),0));
     while(true) {
         VI path(G.size());
-        int m = bfs2(G,F,s,t,path);
+        int m = bfs(G,F,s,t,path);
         if (m == 0) break;
         maxflow += m;
         int v = t;

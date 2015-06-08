@@ -2,6 +2,8 @@
 
 using namespace std;
 
+extern int personas, viajes; 
+
 void prF(MI n) {
     cout << "Solucion preflowpush:" << endl;
     for (int i = 0; i < viajes; ++i) {
@@ -27,8 +29,6 @@ void push(const Network& C, MI& F, VI& excess, int u, int v) {
   F[v][u] -= send;
   excess[u] -= send;
   excess[v] += send;
-
-   //prF(F);
 }
 
 void push(const Network& C, MI& F, VI& excess, int u, int v , int cuv) {
@@ -87,44 +87,8 @@ void moveToFront(int i, VI& A) {
   }
   A[0] = temp;
 }
- 
+
 int preflowpush(const Network& C, MI& F, int source, int sink) {
- 
-  VI seen(C.size());
-  VI list;
-  for(int i = 0; i < C.size(); ++i)
-    if (i != source && i != sink) list.push_back(i);
- 
-  VI height(C.size(),0);
-  height[source] = C.size();
-
-  VI excess(C.size(),0);
-  excess[source] = INT_MAX;
-
-  F = MI(C.size(),VI(C.size(),0));
-  for (auto it = C[source].begin(); it != C[source].end(); ++it)
-    push(C, F, excess, source, (*it).first , (*it).second);
- 
-  int p = 0;
-  while (p < C.size() - 2) {
-    int u = list[p];
-    int old_height = height[u];
-    discharge(C, F, excess, height, seen, u);
-    if (height[u] > old_height) {
-      moveToFront(p,list);
-      p=0;
-    }
-    else
-      p += 1;
-  }
-  int maxflow = 0;
-  for (int i = 0; i < C.size(); ++i)
-    maxflow += F[source][i];
- 
-  return maxflow;
-}
-
-int preflowpush2(const Network& C, MI& F, int source, int sink) {
  
   VI seen(C.size());
   VI list;

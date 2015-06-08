@@ -242,7 +242,7 @@ int main()
      // *arista a T'
     int sumLower = 0;
     for (int i = 0; i < personas; ++i) sumLower += int(probabilidades[i]);
-    //if (sumLower) grafo[s].push_back(make_pair(t,sumLower));
+    if (sumLower) grafo[s].push_back(make_pair(t,sumLower+sumDif-viajes));
     
     // Declarando todos los viajes
     for (int i = 0; i < viajes; ++i) grafo[i+personas+2].push_back(make_pair(t,1));
@@ -254,9 +254,9 @@ int main()
     //int resultado = sumLower + viajes;
     // int resultado = sumLower;
     
-    int resultado = viajes;
+    //int resultado = viajes;
     
-    // int resultado = sumDif + sumLower;
+    int resultado = sumDif + sumLower;
  
     // CASO A
     // Creamos el grafo para ver si se puede cumplir todas las restricciones.
@@ -296,16 +296,15 @@ int main()
         if (resultado == ed) {
             cout << "EK: La opcion A ha sido satisfecha " << ed << endl;
             printFlow(f);
-            //return 0;
         }
         else cout << "EK: ola k ase AAA " << ed << endl;
-        int pfp = preflowpush(grafo,f,0,grafo.size()-1);
+        int pfp = preflowpush2(grafo,f,0,grafo.size()-1);
         if (resultado == pfp) {
-            cout << "PFP: La opcion A ha sido satisfecha " << ed << endl;
+            cout << "PFP: La opcion A ha sido satisfecha " << pfp << endl;
             printFlow(f);
-            return 0;
         }
-        else cout << "PFP: ola k ase AAA " << ed << endl;
+        else cout << "PFP: ola k ase AAA " << pfp << endl;
+        if (ed == pfp && ed == resultado) return 0;
     }
 
     // CASO B
@@ -335,15 +334,15 @@ int main()
             printFlow(f);
             //return 0;
         }
-        else cout << "EK: ola k ase " << ed << endl;
-        int pfp =  preflowpush(grafo,f,0,grafo.size()-1);
+        else cout << "EK: ola k ase BBB" << ed << endl;
+        int pfp =  preflowpush2(grafo,f,0,grafo.size()-1);
 
         if (resultado == pfp) {
-            cout << "PFP: La opcion B ha sido satisfecha " << ed << endl;
+            cout << "PFP: La opcion B ha sido satisfecha " << pfp << endl;
             printFlow(f);
-            return 0;
         }
-        else cout << "PFP: ola k ase " << ed << endl;
+        else cout << "PFP: ola k ase BBB " << pfp << endl;
+        if (ed == pfp && ed == resultado) return 0;
 
     }
 
@@ -361,13 +360,12 @@ int main()
         // return 0;
     }
     else cout << "EK: La opcion D es la unica posible " << ed << endl;
-    int pfp = preflowpush(grafo,f,0,grafo.size()-1);
+    int pfp = preflowpush2(grafo,f,0,grafo.size()-1);
     if (pfp == resultado) {
-        cout << "PFP: La opcion C ha sido satisfecha " << ed << endl;
+        cout << "PFP: La opcion C ha sido satisfecha " << pfp << endl;
         printFlow(f);
-         return 0;
     }
-    else cout << "PFP: La opcion D es la unica posible " << ed << endl;
+    else cout << "PFP: La opcion D es la unica posible " << pfp << endl;
 
     //printNetwork(grafo);
 

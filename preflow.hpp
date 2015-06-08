@@ -28,7 +28,17 @@ void push(const Network& C, MI& F, VI& excess, int u, int v) {
   excess[u] -= send;
   excess[v] += send;
 
-   prF(F);
+   //prF(F);
+}
+
+void push(const Network& C, MI& F, VI& excess, int u, int v , int cuv) {
+  int send = min(excess[u], (cuv - F[u][v]));
+  F[u][v] += send;
+  F[v][u] -= send;
+  excess[u] -= send;
+  excess[v] += send;
+
+  //prF(F);
 }
 
 void relabel(const Network& C, const MI& F, VI& height, int u) {
@@ -58,7 +68,7 @@ void discharge(const Network& C, MI& F, VI& excess, VI& height, VI& seen, int u)
 			   break;
 		    }
       if ((cuv - F[u][v] > 0) && (height[u] > height[v])){
-      push(C, F, excess, u, v);
+      push(C, F, excess, u, v, cuv);
       }
       else
         seen[u] += 1;
@@ -79,21 +89,21 @@ void moveToFront(int i, VI& A) {
 }
  
 int preflowpush(const Network& C, MI& F, int source, int sink) {
-  VI excess, height, list, seen;
-  F = MI(C.size(),VI(C.size(),0));
  
-  excess = VI(C.size());
-  height = VI(C.size());
-  seen = VI(C.size());
-  
+  VI seen(C.size());
+  VI list;
   for(int i = 0; i < C.size(); ++i)
-  	if (i != source && i != sink) list.push_back(i);
+    if (i != source && i != sink) list.push_back(i);
  
+  VI height(C.size(),0);
   height[source] = C.size();
+
+  VI excess(C.size(),0);
   excess[source] = INT_MAX;
 
-  for (int i = 0; i < C.size(); ++i)
-    push(C, F, excess, source, i);
+  F = MI(C.size(),VI(C.size(),0));
+  for (auto it = C[source].begin(); it != C[source].end(); ++it)
+    push(C, F, excess, source, (*it).first , (*it).second);
  
   int p = 0;
   while (p < C.size() - 2) {
@@ -113,3 +123,40 @@ int preflowpush(const Network& C, MI& F, int source, int sink) {
  
   return maxflow;
 }
+
+int preflowpush2(const Network& C, MI& F, int source, int sink) {
+ 
+  VI seen(C.size());
+  VI list;
+  for(int i = 0; i < C.size(); ++i)
+    if (i != source && i != sink) list.push_back(i);
+ 
+  VI height(C.size(),0);
+  height[source] = C.size();
+
+  VI excess(C.size(),0);
+  excess[source] = INT_MAX;
+
+  F = MI(C.size(),VI(C.size(),0));
+  for (auto it = C[source].begin(); it != C[source].end(); ++it)
+    push(C, F, excess, source, (*it).first , (*it).second);
+ 
+  int p = 0;
+  while (p < C.size() - 2) {
+    int u = list[p];
+    int old_height = height[u];
+    discharge(C, F, excess, height, seen, u);
+    if (height[u] > old_height) {
+      moveToFront(p,list);
+      p=0;
+    }
+    else
+      p += 1;
+  }
+  int maxflow = 0;
+  for (int i = 0; i < C.size(); ++i)
+    maxflow += F[source][i];
+ 
+  return maxflow;
+}
+

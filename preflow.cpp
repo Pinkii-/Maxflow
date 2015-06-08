@@ -43,7 +43,7 @@ void discharge(const Network& C, MI& F, VI& excess, VI& height, VI& seen, int u)
 			break;
 		}
       if ((cuv - F[u][v] > 0) && (height[u] > height[v])){
-    push(C, F, excess, u, v);
+    	push(C, F, excess, u, v);
       }
       else
     seen[u] += 1;
